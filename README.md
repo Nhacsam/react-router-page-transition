@@ -184,6 +184,10 @@ Similar callbacks for **leave** event:
 - `transition-appear`, `transition-appear-active`, `transition-leave`, `transition-leave-active`.
 - Root element of the transited page must have `transition-item` class.
 
+With the history props :
+
+- `transition-pop`, `transition-push`
+
 ## Using with Redux
 
 By default, `PageTransition` will animates its children when `componentWillReceiveProps` is triggered. It compares `this.props.children !== nextProps.children` to know if the page has changed (ex: move from page Login to page AdminPanel).
@@ -207,8 +211,10 @@ to compare the childrens. Now you can control exactly when will the pages are ch
 
 At the moment, callbacks are not supported on React Router 4, however the basic CSS transitions still works. You have to wrap your `<Route>` with `<Switch>`. Please notice that you **have to** pass the `location` prop to `<Switch>` to make it work.
 
+If you pass the `history` to the `PageTransition` component, you will be able to use the `.transition-push` and `.transition-pop` class.
+
 ```jsx
-        <PageTransition>
+        <PageTransition history={this.props.history}>
           <Switch location={this.props.location}>
             <Route exact path="/" component={ListPage} />
             <Route path="/detail/:itemId" component={ItemDetailPage} />
