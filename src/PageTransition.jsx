@@ -83,6 +83,8 @@ export default class PageTransition extends React.Component {
 
   transite(nextChild) {
     return new Promise((transiteDone, transiteFailed) => {
+      const transitionActionUpper = this.props.history && this.props.history.action;
+      const transitionAction = transitionActionUpper && transitionActionUpper.toLowerCase();
       // Render the new children
       this.state[`child${this.state.nextChild}`] = nextChild;
       this.forceUpdate(() => {
@@ -116,6 +118,10 @@ export default class PageTransition extends React.Component {
           if (newChildDom.classList.contains('transition-item')) {
             timeout = this.props.timeout;
             newChildDom.classList.add('transition-appear');
+            if (transitionAction) {
+              newChildDom.classList.add(`transition-${transitionAction}`);
+            }
+
             newChildDom.offsetHeight; // Trigger layout to make sure transition happen
             if (newChild.transitionManuallyStart) {
               return (
@@ -127,6 +133,9 @@ export default class PageTransition extends React.Component {
           }
           if (prevChildDom) {
             prevChildDom.classList.add('transition-leave');
+            if (transitionAction) {
+              prevChildDom.classList.add(`transition-${transitionAction}`);
+            }
             prevChildDom.classList.add('transition-item');
             timeout = this.props.timeout;
             prevChildDom.offsetHeight; // Trigger layout to make sure transition happen
@@ -191,6 +200,9 @@ export default class PageTransition extends React.Component {
         const end = () => {
           if (newChildDom.classList.contains('transition-item')) {
             newChildDom.classList.remove('transition-appear');
+            if (transitionAction) {
+              newChildDom.classList.remove(`transition-${transitionAction}`);
+            }
             newChildDom.classList.remove('transition-item');
 
             if (newChild.transitionManuallyStop) {
@@ -206,6 +218,9 @@ export default class PageTransition extends React.Component {
             prevChildDom.classList.contains('transition-item')
           ) {
             prevChildDom.classList.remove('transition-leave');
+            if (transitionAction) {
+              prevChildDom.classList.remove(`transition-${transitionAction}`);
+            }
             prevChildDom.classList.remove('transition-item');
 
             if (prevChild.transitionLeaveManuallyStop) {
@@ -272,6 +287,7 @@ PageTransition.propTypes = {
   animateOnInit: PropTypes.bool,
   timeout: PropTypes.number,
   compareChildren: PropTypes.func,
+  history: PropTypes.object,
 };
 
 PageTransition.defaultProps = {
